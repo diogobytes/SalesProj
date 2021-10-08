@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Data;
 using WebApplication1.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace WebApplication1.Services
 {
     public class DepartmentService
@@ -15,9 +15,9 @@ namespace WebApplication1.Services
         {
             _context = context;
         }
-        public List<Department> findAll()
+        public async Task<List<Department>> findAllAsync()
         {
-            return _context.Department.OrderBy(x => x.Name).ToList();
+            return await _context.Department.OrderBy(x => x.Name).ToListAsync();
         }
 
     }
