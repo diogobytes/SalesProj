@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WebApplication1
 {
@@ -41,6 +43,8 @@ namespace WebApplication1
             builder.MigrationsAssembly("WebApplication1")));
 
             services.AddScoped<SeedingService>(); // depedency injection
+            services.AddScoped<SellerService>();
+            services.AddScoped<DepartmentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
