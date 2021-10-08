@@ -46,6 +46,7 @@ namespace WebApplication1
             services.AddScoped<SeedingService>(); // depedency injection
             services.AddScoped<SellerService>();
             services.AddScoped<DepartmentService>();
+            services.AddScoped<SalesRecordService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
