@@ -7,6 +7,7 @@ using WebApplication1.Models;
 using WebApplication1.Services;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Services.Exceptions;
+using System.Diagnostics;
 
 namespace WebApplication1.Controllers
 {
@@ -39,9 +40,9 @@ namespace WebApplication1.Controllers
 
         public IActionResult Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return RedirectToAction(nameof(Error), new { message = "Id not provided"});
             var obj = _sellerService.FindById(id.Value);
-            if (obj == null) return NotFound();
+            if (obj == null) return RedirectToAction(nameof(Error), new { message = "Object not Found" });
             return View(obj);
         }
         [HttpPost]
@@ -53,15 +54,15 @@ namespace WebApplication1.Controllers
         }
         public IActionResult Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             var obj = _sellerService.FindById(id.Value);
-            if (obj == null) return NotFound();
+            if (obj == null)  return RedirectToAction(nameof(Error), new { message = "Not found" }); ;
             return View(obj);
 
         }
         public IActionResult Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             var obj = _sellerService.FindById(id.Value);
             if (obj == null) return NotFound();
             List<Department> departments = _departmentService.findAll();
@@ -72,20 +73,26 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            if (id != seller.Id) return BadRequest();
+            if (id != seller.Id) return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             try
             {
                 _sellerService.Update(seller);
             }
-            catch (NotFoundException)
+            
+            catch (ApplicationException e)
             {
-                return NotFound();
-            }
-            catch (DbConcurrencyException)
-            {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }
